@@ -2,7 +2,7 @@
 {
   "modid": "betterautojump",
   "name": "Better Auto Jump",
-  "description": "A mod provides a better configuration for auto-jump behavior.",
+  "description": "A mod provides a better configuration for the auto-jump behavior.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "www.mmyzd.com",
