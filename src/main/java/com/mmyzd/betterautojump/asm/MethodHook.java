@@ -2,9 +2,6 @@ package com.mmyzd.betterautojump.asm;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.lwjgl.input.Keyboard;
-
 import com.mmyzd.betterautojump.BetterAutoJump;
 import com.mmyzd.betterautojump.ConfigManager;
 
@@ -12,10 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiOptionButton;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.GameSettings.Options;
-import net.minecraftforge.common.config.Property;
 
 public class MethodHook {
 
@@ -49,7 +43,7 @@ public class MethodHook {
 		ConfigManager config = BetterAutoJump.instance.config;
 		if (config.autoJumpMode.getString().equals(ConfigManager.AUTO_JUMP_MODE_HOLD)) {
 			boolean isSprintKeyDown = Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown();
-			boolean isSprintingMode = isMovingModeEqualsToSprinting();
+			boolean isSprintingMode = isMovingModeEqualToSprinting();
 			return isSprintingMode == isSprintKeyDown;
 		}
 		return player.isSneaking();
@@ -62,9 +56,13 @@ public class MethodHook {
 				|| config.autoJumpMode.getString().equals(ConfigManager.AUTO_JUMP_MODE_HOLD);
 	}
 	
-	public static boolean isMovingModeEqualsToSprinting() {
+	public static boolean isMovingModeEqualToSprinting() {
 		ConfigManager config = BetterAutoJump.instance.config;
 		return config.movingMode.getString().equals(ConfigManager.MOVING_MODE_SPRINTING);
+	}
+	
+	public static boolean isForcedToWalk() {
+		return isMovingModeEqualToSprinting() && Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown();
 	}
 	
 }
