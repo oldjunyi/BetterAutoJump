@@ -1,5 +1,6 @@
 package com.mmyzd.betterautojump;
 
+import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.client.Minecraft;
@@ -54,7 +55,7 @@ public class BetterAutoJump {
 			}
 			config.movingMode.set(movingMode);
 			config.file.save();
-			message = "Better Auto Jump: Set default moving mode to '" + movingMode + "'";
+			message = "Better Auto Jump: " + StringUtils.capitalize(movingMode);
 			messageRemainingTicks = 40;
 		}
 	}
