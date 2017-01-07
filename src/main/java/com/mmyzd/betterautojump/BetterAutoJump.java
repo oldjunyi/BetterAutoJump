@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiOptionButton;
+import net.minecraft.client.settings.GameSettings.Options;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
@@ -52,6 +54,10 @@ public class BetterAutoJump {
 			} else {
 				movingMode = ConfigManager.MOVING_MODE_WALKING;
 				Minecraft.getMinecraft().player.setSprinting(false);
+			}
+			config.keepAutoJumpModeConsistent();
+			if (config.autoJumpMode.getString().equals(ConfigManager.AUTO_JUMP_MODE_HOLD)) {
+				Minecraft.getMinecraft().gameSettings.setOptionValue(Options.AUTO_JUMP, 1);
 			}
 			config.movingMode.set(movingMode);
 			config.file.save();
