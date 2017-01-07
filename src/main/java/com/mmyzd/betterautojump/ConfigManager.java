@@ -18,7 +18,8 @@ public class ConfigManager {
 
 	public Configuration file;
 
-	private String negativeMode = ConfigManager.AUTO_JUMP_MODE_HOLD;
+	private String negativeAutoJumpMode = ConfigManager.AUTO_JUMP_MODE_HOLD;
+	private String positiveAutoJumpMode = ConfigManager.AUTO_JUMP_MODE_HOLD;
 
 	public Property autoJumpMode;
 	public static final String AUTO_JUMP_MODE_ON = "on";
@@ -53,9 +54,10 @@ public class ConfigManager {
 		autoJumpMode.set(autoJumpMode.getString());
 		if (autoJumpMode.getString().equals(AUTO_JUMP_MODE_ON)) {
 			Minecraft.getMinecraft().gameSettings.autoJump = true;
+			positiveAutoJumpMode = autoJumpMode.getString();
 		} else {
 			Minecraft.getMinecraft().gameSettings.autoJump = false;
-			negativeMode = autoJumpMode.getString();
+			negativeAutoJumpMode = autoJumpMode.getString();
 		}
 		
 		String[] movingModeOptions = new String[] { MOVING_MODE_WALKING, MOVING_MODE_SPRINTING };
@@ -65,6 +67,7 @@ public class ConfigManager {
 		movingModeComment += " Default: " + movingModeDefaultValue + ".";
 		movingMode = file.get("general", "movingMode", movingModeDefaultValue, movingModeComment, movingModeOptions);
 		movingMode.set(movingMode.getString());
+		updateAutoJumpMemorizedMode();
 
 		file.save();
 	}
@@ -77,12 +80,12 @@ public class ConfigManager {
 	public void keepAutoJumpModeConsistent() {
 		if (Minecraft.getMinecraft().gameSettings.autoJump) {
 			if (!autoJumpMode.getString().equals(AUTO_JUMP_MODE_ON)) {
-				autoJumpMode.set(AUTO_JUMP_MODE_ON);
+				autoJumpMode.set(positiveAutoJumpMode);
 				file.save();
 			}
 		} else {
 			if (autoJumpMode.getString().equals(AUTO_JUMP_MODE_ON)) {
-				autoJumpMode.set(negativeMode);
+				autoJumpMode.set(negativeAutoJumpMode);
 				file.save();
 			}
 		}
@@ -91,17 +94,30 @@ public class ConfigManager {
 	public void toggleAutoJumpMode() {
 		GameSettings gameSettings = Minecraft.getMinecraft().gameSettings;
 		if (autoJumpMode.getString().equals(AUTO_JUMP_MODE_ON)) {
-			autoJumpMode.set(negativeMode = AUTO_JUMP_MODE_HOLD);
+			positiveAutoJumpMode = AUTO_JUMP_MODE_HOLD;
+			negativeAutoJumpMode = AUTO_JUMP_MODE_HOLD;
+			autoJumpMode.set(AUTO_JUMP_MODE_HOLD);
 			gameSettings.setOptionValue(Options.AUTO_JUMP, 1);
 		} else if (autoJumpMode.getString().equals(AUTO_JUMP_MODE_HOLD)) {
-			autoJumpMode.set(negativeMode = AUTO_JUMO_MODE_OFF);
+			negativeAutoJumpMode = AUTO_JUMO_MODE_OFF;
+			autoJumpMode.set(AUTO_JUMO_MODE_OFF);
 		} else if (autoJumpMode.getString().equals(AUTO_JUMO_MODE_OFF)) {
+			positiveAutoJumpMode = AUTO_JUMP_MODE_ON;
 			autoJumpMode.set(AUTO_JUMP_MODE_ON);
 			gameSettings.setOptionValue(Options.AUTO_JUMP, 1);
 		} else {
 			return;
 		}
+		updateAutoJumpMemorizedMode();
 		file.save();
+	}
+	
+	public void updateAutoJumpMemorizedMode() {
+		if (movingMode.getString().equals(MOVING_MODE_WALKING)) {
+			positiveAutoJumpMode = AUTO_JUMP_MODE_ON;
+		} else {
+			negativeAutoJumpMode = AUTO_JUMO_MODE_OFF;
+		}
 	}
 
 	public String getAutoJumpButtonDisplayString() {
