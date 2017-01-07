@@ -18,12 +18,16 @@ public class ConfigManager {
 
 	public Configuration file;
 
-	private String negativeMode = ConfigManager.MODE_HOLD;
+	private String negativeMode = ConfigManager.AUTO_JUMP_MODE_HOLD;
 
-	public Property mode;
-	public static final String MODE_ON = "on";
-	public static final String MODE_HOLD = "hold";
-	public static final String MODE_OFF = "off";
+	public Property autoJumpMode;
+	public static final String AUTO_JUMP_MODE_ON = "on";
+	public static final String AUTO_JUMP_MODE_HOLD = "hold";
+	public static final String AUTO_JUMO_MODE_OFF = "off";
+	
+	public Property movingMode;
+	public static final String MOVING_MODE_WALKING = "walking";
+	public static final String MOVING_MODE_SPRINTING = "sprinting";
 
 	public ConfigManager(File configDir) {
 		file = new Configuration(new File(configDir, "BetterAutoJump.cfg"));
@@ -40,51 +44,59 @@ public class ConfigManager {
 	void reload() {
 		file.load();
 
-		String[] modeValidValues = new String[] { MODE_ON, MODE_HOLD, MODE_OFF };
-		String modeDefault = MODE_HOLD;
-		String modeComment = "Auto-jump mode.";
-		modeComment += " Available options: [" + StringUtils.join(modeValidValues, ", ") + "].";
-		modeComment += " Default: "+ modeDefault + ".";
-		mode = file.get("general", "mode", modeDefault, modeComment, modeValidValues);
-		mode.set(mode.getString());
-		if (mode.getString().equals(MODE_ON)) {
+		String[] autoJumpModeOptions = new String[] { AUTO_JUMP_MODE_ON, AUTO_JUMP_MODE_HOLD, AUTO_JUMO_MODE_OFF };
+		String autoJumpModeDefaultValue = AUTO_JUMP_MODE_HOLD;
+		String autoJumpModeComment = "The auto-jump mode.";
+		autoJumpModeComment += " Available options: [" + StringUtils.join(autoJumpModeOptions, ", ") + "].";
+		autoJumpModeComment += " Default: " + autoJumpModeDefaultValue + ".";
+		autoJumpMode = file.get("general", "autoJumpMode", autoJumpModeDefaultValue, autoJumpModeComment, autoJumpModeOptions);
+		autoJumpMode.set(autoJumpMode.getString());
+		if (autoJumpMode.getString().equals(AUTO_JUMP_MODE_ON)) {
 			Minecraft.getMinecraft().gameSettings.autoJump = true;
 		} else {
 			Minecraft.getMinecraft().gameSettings.autoJump = false;
-			negativeMode = mode.getString();
+			negativeMode = autoJumpMode.getString();
 		}
+		
+		String[] movingModeOptions = new String[] { MOVING_MODE_WALKING, MOVING_MODE_SPRINTING };
+		String movingModeDefaultValue = MOVING_MODE_WALKING;
+		String movingModeComment = "The default moving mode.";
+		movingModeComment += " Available options: [" + StringUtils.join(movingModeOptions, ", ") + "].";
+		movingModeComment += " Default: " + movingModeDefaultValue + ".";
+		movingMode = file.get("general", "movingMode", movingModeDefaultValue, movingModeComment, movingModeOptions);
+		movingMode.set(movingMode.getString());
 
 		file.save();
 	}
-	
+
 	@SubscribeEvent
 	public void onGuiOpen(GuiOpenEvent event) {
 		keepAutoJumpModeConsistent();
 	}
-	
+
 	public void keepAutoJumpModeConsistent() {
 		if (Minecraft.getMinecraft().gameSettings.autoJump) {
-			if (!mode.getString().equals(MODE_ON)) {
-				mode.set(MODE_ON);
+			if (!autoJumpMode.getString().equals(AUTO_JUMP_MODE_ON)) {
+				autoJumpMode.set(AUTO_JUMP_MODE_ON);
 				file.save();
 			}
 		} else {
-			if (mode.getString().equals(MODE_ON)) {
-				mode.set(negativeMode);
+			if (autoJumpMode.getString().equals(AUTO_JUMP_MODE_ON)) {
+				autoJumpMode.set(negativeMode);
 				file.save();
 			}
 		}
 	}
 
-	public void toggleMode() {
+	public void toggleAutoJumpMode() {
 		GameSettings gameSettings = Minecraft.getMinecraft().gameSettings;
-		if (mode.getString().equals(MODE_ON)) {
-			mode.set(negativeMode = MODE_HOLD);
+		if (autoJumpMode.getString().equals(AUTO_JUMP_MODE_ON)) {
+			autoJumpMode.set(negativeMode = AUTO_JUMP_MODE_HOLD);
 			gameSettings.setOptionValue(Options.AUTO_JUMP, 1);
-		} else if (mode.getString().equals(MODE_HOLD)) {
-			mode.set(negativeMode = MODE_OFF);
-		} else if (mode.getString().equals(MODE_OFF)) {
-			mode.set(MODE_ON);
+		} else if (autoJumpMode.getString().equals(AUTO_JUMP_MODE_HOLD)) {
+			autoJumpMode.set(negativeMode = AUTO_JUMO_MODE_OFF);
+		} else if (autoJumpMode.getString().equals(AUTO_JUMO_MODE_OFF)) {
+			autoJumpMode.set(AUTO_JUMP_MODE_ON);
 			gameSettings.setOptionValue(Options.AUTO_JUMP, 1);
 		} else {
 			return;
@@ -95,10 +107,10 @@ public class ConfigManager {
 	public String getAutoJumpButtonDisplayString() {
 		GameSettings gameSettings = Minecraft.getMinecraft().gameSettings;
 		String displayValue;
-		if (mode.getString().equals(MODE_HOLD)) {
-			displayValue = I18n.format("options.betterautojump." + mode.getString());
+		if (autoJumpMode.getString().equals(AUTO_JUMP_MODE_HOLD)) {
+			displayValue = I18n.format("options.betterautojump." + autoJumpMode.getString());
 		} else {
-			displayValue = I18n.format("options." + mode.getString());
+			displayValue = I18n.format("options." + autoJumpMode.getString());
 		}
 		String displayKey = I18n.format(Options.AUTO_JUMP.getEnumString());
 		return displayKey + ": " + displayValue;

@@ -2,6 +2,7 @@ package com.mmyzd.betterautojump.asm;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
 import org.lwjgl.input.Keyboard;
 
 import com.mmyzd.betterautojump.BetterAutoJump;
@@ -27,11 +28,8 @@ public class MethodHook {
 				GuiOptionButton optionButton = (GuiOptionButton) button;
 				if (optionButton.returnEnumOptions() == Options.AUTO_JUMP) {
 					autoJumpButtonId = button.id;
-					buttonList.add(new GuiButton(
-							autoJumpButtonId,
-							button.xPosition, button.yPosition,
-							button.width, button.height,
-							config.getAutoJumpButtonDisplayString()));
+					buttonList.add(new GuiButton(autoJumpButtonId, button.xPosition, button.yPosition, button.width,
+							button.height, config.getAutoJumpButtonDisplayString()));
 					buttonList.remove(button);
 					break;
 				}
@@ -42,15 +40,17 @@ public class MethodHook {
 	public static void handleActionInGuiControls(GuiButton button) {
 		ConfigManager config = BetterAutoJump.instance.config;
 		if (button.id == autoJumpButtonId) {
-			config.toggleMode();
+			config.toggleAutoJumpMode();
 		}
 		button.displayString = config.getAutoJumpButtonDisplayString();
 	}
 
 	public static boolean disallowAutoJump(EntityPlayerSP player) {
 		ConfigManager config = BetterAutoJump.instance.config;
-		if (config.mode.getString().equals(ConfigManager.MODE_HOLD)) {
-			return !Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown();
+		if (config.autoJumpMode.getString().equals(ConfigManager.AUTO_JUMP_MODE_HOLD)) {
+			boolean isSprintKeyDown = Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown();
+			boolean isSprintingMode = isMovingModeEqualsToSprinting();
+			return isSprintingMode == isSprintKeyDown;
 		}
 		return player.isSneaking();
 	}
@@ -58,8 +58,13 @@ public class MethodHook {
 	public static boolean isAutoJumpEnabled() {
 		ConfigManager config = BetterAutoJump.instance.config;
 		config.keepAutoJumpModeConsistent();
-		return Minecraft.getMinecraft().gameSettings.autoJump ||
-				config.mode.getString().equals(ConfigManager.MODE_HOLD);
+		return Minecraft.getMinecraft().gameSettings.autoJump
+				|| config.autoJumpMode.getString().equals(ConfigManager.AUTO_JUMP_MODE_HOLD);
 	}
-
+	
+	public static boolean isMovingModeEqualsToSprinting() {
+		ConfigManager config = BetterAutoJump.instance.config;
+		return config.movingMode.getString().equals(ConfigManager.MOVING_MODE_SPRINTING);
+	}
+	
 }

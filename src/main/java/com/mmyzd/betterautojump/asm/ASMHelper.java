@@ -13,23 +13,17 @@ import com.google.common.collect.ImmutableMap;
 public class ASMHelper {
 
 	private static final ImmutableMap<String, String> PRIMITIVE_TABLE = ImmutableMap.<String, String>builder()
-			.put("byte", "B")
-			.put("char", "C")
-			.put("double", "D")
-			.put("float", "F")
-			.put("int", "I")
-			.put("long", "J")
-			.put("short", "S")
-			.put("boolean", "Z")
-			.put("void", "V")
-			.build();
+			.put("byte", "B").put("char", "C").put("double", "D").put("float", "F").put("int", "I").put("long", "J")
+			.put("short", "S").put("boolean", "Z").put("void", "V").build();
 
 	public static String getModifierInfo(int src, int dst) {
 		String s = getModifierText(src);
 		if (dst != -1 && src != dst) {
 			String t = getModifierText(dst);
-			if (s.isEmpty()) s = "default";
-			if (t.isEmpty()) t = "default";
+			if (s.isEmpty())
+				s = "default";
+			if (t.isEmpty())
+				t = "default";
 			return " # " + s + " -> " + t;
 		} else {
 			return s.isEmpty() ? "" : " # " + s;
@@ -45,8 +39,10 @@ public class ASMHelper {
 		} else if ((flag & Opcodes.ACC_PUBLIC) != 0) {
 			tags.add("public");
 		}
-		if ((flag & Opcodes.ACC_STATIC) != 0) tags.add("static");
-		if ((flag & Opcodes.ACC_FINAL) != 0) tags.add("final");
+		if ((flag & Opcodes.ACC_STATIC) != 0)
+			tags.add("static");
+		if ((flag & Opcodes.ACC_FINAL) != 0)
+			tags.add("final");
 		return StringUtils.join(tags.iterator(), ' ');
 	}
 
@@ -54,16 +50,19 @@ public class ASMHelper {
 		int flag = 0;
 		String[] tokens = text.split(" ");
 		for (int i = 0; i < tokens.length; i++) {
-			if (tokens[i].equals("private") || 
-				tokens[i].equals("protected") ||
-				tokens[i].equals("public")) {
+			if (tokens[i].equals("private") || tokens[i].equals("protected") || tokens[i].equals("public")) {
 				flag &= ~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED | Opcodes.ACC_PUBLIC);
-				if (tokens[i].equals("private")) flag |= Opcodes.ACC_PRIVATE;
-				if (tokens[i].equals("protected")) flag |= Opcodes.ACC_PROTECTED;
-				if (tokens[i].equals("public")) flag |= Opcodes.ACC_PUBLIC;
+				if (tokens[i].equals("private"))
+					flag |= Opcodes.ACC_PRIVATE;
+				if (tokens[i].equals("protected"))
+					flag |= Opcodes.ACC_PROTECTED;
+				if (tokens[i].equals("public"))
+					flag |= Opcodes.ACC_PUBLIC;
 			}
-			if (tokens[i].equals("static")) flag |= Opcodes.ACC_STATIC;
-			if (tokens[i].equals("final")) flag |= Opcodes.ACC_FINAL;
+			if (tokens[i].equals("static"))
+				flag |= Opcodes.ACC_STATIC;
+			if (tokens[i].equals("final"))
+				flag |= Opcodes.ACC_FINAL;
 		}
 		return flag;
 	}
@@ -89,7 +88,8 @@ public class ASMHelper {
 			ret.append('(');
 			while (!tokens.isEmpty()) {
 				ret.append(tokens.poll());
-				if (!tokens.isEmpty()) ret.append(", ");
+				if (!tokens.isEmpty())
+					ret.append(", ");
 			}
 			ret.append(')');
 		}
@@ -101,20 +101,23 @@ public class ASMHelper {
 	}
 
 	public static String getDescFromType(String name) {
-		if (name.endsWith("[]")) return "[" + getDescFromType(name.substring(0, name.length() - 2));
+		if (name.endsWith("[]"))
+			return "[" + getDescFromType(name.substring(0, name.length() - 2));
 		if (name.endsWith(")")) {
 			int pos = name.indexOf('(');
 			LinkedList<String> args = getTokens(name.substring(pos + 1, name.length() - 1));
 			StringBuilder desc = new StringBuilder();
 			desc.append('(');
 			Iterator<String> t = args.iterator();
-			while (t.hasNext()) desc.append(getDescFromType(t.next()));
+			while (t.hasNext())
+				desc.append(getDescFromType(t.next()));
 			desc.append(')');
 			desc.append(getDescFromType(name.substring(0, pos)));
 			return desc.toString();
 		}
 		String ret = PRIMITIVE_TABLE.get(name);
-		if (ret != null) return ret;
+		if (ret != null)
+			return ret;
 		return "L" + getIntlFromType(name) + ";";
 	}
 
@@ -130,7 +133,8 @@ public class ASMHelper {
 			ret.append(t.getReturnType().getClassName());
 			ret.append('(');
 			for (int i = 0; i < ats.length; i++) {
-				if (i != 0) ret.append(", ");
+				if (i != 0)
+					ret.append(", ");
 				ret.append(ats[i].getClassName());
 			}
 			ret.append(')');
@@ -152,7 +156,8 @@ public class ASMHelper {
 				StringBuilder s = new StringBuilder();
 				while (Character.isLetterOrDigit(c) || "$_.<>[]".indexOf(c) != -1) {
 					s.append(c);
-					if (++i == n) break;
+					if (++i == n)
+						break;
 					c = code.charAt(i);
 				}
 				if (s.length() != 0) {

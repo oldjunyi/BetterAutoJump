@@ -27,7 +27,9 @@ public class ClassTransformer implements IClassTransformer {
 		ClassNode node = new ClassNode();
 		reader.accept(new FMLRemappingAdapter(node), ClassReader.EXPAND_FRAMES);
 		BasePatch patch = patches.get(transformedName);
-		if (patch == null) return bytes;
+		if (patch == null) {
+			return bytes;
+		}
 		patch.apply(transformedName, node);
 		ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
 		node.accept(writer);
