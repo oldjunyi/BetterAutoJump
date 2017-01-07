@@ -5,6 +5,7 @@ import org.lwjgl.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -37,7 +38,7 @@ public class BetterAutoJump {
 	public void init(FMLInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(config);
 		MinecraftForge.EVENT_BUS.register(this);
-		keyToggleWalking = new KeyBinding("key.betterautojump.toggle_walking", Keyboard.KEY_G, "key.categories.betterautojump");
+		keyToggleWalking = new KeyBinding("key.betterautojump.toggle_walking", KeyConflictContext.IN_GAME, Keyboard.KEY_G, "key.categories.betterautojump");
 		ClientRegistry.registerKeyBinding(keyToggleWalking);
 	}
 	
