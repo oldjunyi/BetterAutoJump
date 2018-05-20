@@ -41,7 +41,7 @@ public class BetterAutoJump {
 	public void init(FMLInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(config);
 		MinecraftForge.EVENT_BUS.register(this);
-		keyToggleWalking = new KeyBinding("key.betterautojump.togglewalking", KeyConflictContext.IN_GAME, Keyboard.KEY_G, "key.categories.betterautojump");
+		keyToggleWalking = new KeyBinding("key.betterautojump.toggle_walking", KeyConflictContext.IN_GAME, Keyboard.KEY_G, "key.categories.betterautojump");
 		ClientRegistry.registerKeyBinding(keyToggleWalking);
 	}
 	
