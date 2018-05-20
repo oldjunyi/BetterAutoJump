@@ -25,7 +25,7 @@ public class ConfigManager {
 	public static final String AUTO_JUMP_MODE_ON = "on";
 	public static final String AUTO_JUMP_MODE_HOLD = "hold";
 	public static final String AUTO_JUMP_MODE_OFF = "off";
-	
+
 	public Property movingMode;
 	public static final String MOVING_MODE_WALKING = "walking";
 	public static final String MOVING_MODE_SPRINTING = "sprinting";
@@ -50,7 +50,8 @@ public class ConfigManager {
 		String autoJumpModeComment = "The auto-jump mode.";
 		autoJumpModeComment += " Available options: [" + StringUtils.join(autoJumpModeOptions, ", ") + "].";
 		autoJumpModeComment += " Default: " + autoJumpModeDefaultValue + ".";
-		autoJumpMode = file.get("general", "autoJumpMode", autoJumpModeDefaultValue, autoJumpModeComment, autoJumpModeOptions);
+		autoJumpMode = file.get("general", "autoJumpMode", autoJumpModeDefaultValue, autoJumpModeComment,
+				autoJumpModeOptions);
 		autoJumpMode.set(autoJumpMode.getString());
 		if (autoJumpMode.getString().equals(AUTO_JUMP_MODE_ON)) {
 			Minecraft.getMinecraft().gameSettings.autoJump = true;
@@ -59,7 +60,7 @@ public class ConfigManager {
 			Minecraft.getMinecraft().gameSettings.autoJump = false;
 			negativeAutoJumpMode = autoJumpMode.getString();
 		}
-		
+
 		String[] movingModeOptions = new String[] { MOVING_MODE_WALKING, MOVING_MODE_SPRINTING };
 		String movingModeDefaultValue = MOVING_MODE_WALKING;
 		String movingModeComment = "The default moving mode.";
@@ -96,7 +97,7 @@ public class ConfigManager {
 				autoJumpMode.set(positiveAutoJumpMode);
 				file.save();
 			}
-		} 
+		}
 	}
 
 	public void toggleAutoJumpMode() {
@@ -127,7 +128,7 @@ public class ConfigManager {
 		} else {
 			displayValue = I18n.format("options." + autoJumpMode.getString());
 		}
-		String displayKey = I18n.format(Options.AUTO_JUMP.getEnumString());
+		String displayKey = I18n.format(Options.AUTO_JUMP.getTranslation());
 		return displayKey + ": " + displayValue;
 	}
 

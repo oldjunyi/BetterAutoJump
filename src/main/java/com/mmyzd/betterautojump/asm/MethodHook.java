@@ -20,10 +20,10 @@ public class MethodHook {
 		for (GuiButton button : buttonList) {
 			if (button instanceof GuiOptionButton) {
 				GuiOptionButton optionButton = (GuiOptionButton) button;
-				if (optionButton.returnEnumOptions() == Options.AUTO_JUMP) {
+				if (optionButton.getOption() == Options.AUTO_JUMP) {
 					autoJumpButtonId = button.id;
-					buttonList.add(new GuiButton(autoJumpButtonId, button.xPosition, button.yPosition, button.width,
-							button.height, config.getAutoJumpButtonDisplayString()));
+					buttonList.add(new GuiButton(autoJumpButtonId, button.x, button.y, button.width, button.height,
+							config.getAutoJumpButtonDisplayString()));
 					buttonList.remove(button);
 					break;
 				}
@@ -55,14 +55,14 @@ public class MethodHook {
 		return Minecraft.getMinecraft().gameSettings.autoJump
 				|| config.autoJumpMode.getString().equals(ConfigManager.AUTO_JUMP_MODE_HOLD);
 	}
-	
+
 	public static boolean isMovingModeEqualToSprinting() {
 		ConfigManager config = BetterAutoJump.instance.config;
 		return config.movingMode.getString().equals(ConfigManager.MOVING_MODE_SPRINTING);
 	}
-	
+
 	public static boolean isForcedToWalk() {
 		return isMovingModeEqualToSprinting() && Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown();
 	}
-	
+
 }
