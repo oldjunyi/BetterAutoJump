@@ -1,0 +1,8 @@
+language.name=Simplified Chinese
+language.region=CN
+language.code=zh_CN
+
+key.betterautojump.toggle_walking=切换移动模式
+key.categories.betterautojump=Better Auto Jump
+
+options.betterautojump.hold=按住疾跑键时
